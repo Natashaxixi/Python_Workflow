@@ -1,0 +1,107 @@
+1. Explore the Data
+Check the first few rows to understand the dataset:
+
+python
+Copy
+Edit
+msft_data.head()
+Check the column names and data types:
+
+python
+Copy
+Edit
+msft_data.info()
+View basic statistics:
+
+python
+Copy
+Edit
+msft_data.describe()
+🔹 2. Plot the Stock Price
+Plot the closing price over time:
+
+python
+Copy
+Edit
+import matplotlib.pyplot as plt
+
+msft_data['Close'].plot(figsize=(12,6), title="MSFT Closing Price", ylabel="Price ($)", grid=True)
+plt.show()
+Plot the stock's volume traded:
+
+python
+Copy
+Edit
+msft_data['Volume'].plot(figsize=(12,6), title="MSFT Trading Volume", ylabel="Volume", grid=True)
+plt.show()
+🔹 3. Calculate Moving Averages
+Calculate a 50-day and 200-day moving average to identify trends:
+
+python
+Copy
+Edit
+msft_data['50_MA'] = msft_data['Close'].rolling(window=50).mean()
+msft_data['200_MA'] = msft_data['Close'].rolling(window=200).mean()
+
+msft_data[['Close', '50_MA', '200_MA']].plot(figsize=(12,6), title="MSFT Price with Moving Averages", grid=True)
+plt.show()
+🔹 4. Calculate Daily Returns
+Find how much the stock changes daily:
+
+python
+Copy
+Edit
+msft_data['Daily Return'] = msft_data['Close'].pct_change()
+msft_data['Daily Return'].plot(figsize=(12,6), title="MSFT Daily Returns", grid=True)
+plt.show()
+🔹 5. Find the Highest and Lowest Prices
+python
+Copy
+Edit
+max_price = msft_data['Close'].max()
+min_price = msft_data['Close'].min()
+
+print(f"Highest Price: ${max_price:.2f}")
+print(f"Lowest Price: ${min_price:.2f}")
+🔹 6. Predict Future Stock Prices (Basic Machine Learning)
+You can train a simple model to predict prices using libraries like scikit-learn:
+
+python
+Copy
+Edit
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Prepare the dataset
+msft_data['Date'] = msft_data.index
+msft_data['Days'] = (msft_data['Date'] - msft_data['Date'].min()).dt.days
+X = msft_data[['Days']]
+y = msft_data['Close']
+
+# Train the model
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict the future price
+future_days = np.array([[msft_data['Days'].max() + i] for i in range(1, 31)])
+predicted_prices = model.predict(future_days)
+
+# Plot predictions
+plt.figure(figsize=(12,6))
+plt.plot(msft_data['Date'], msft_data['Close'], label="Actual Prices")
+plt.plot(msft_data['Date'].max() + pd.to_timedelta(future_days.flatten(), unit="D"), predicted_prices, label="Predicted Prices", linestyle="dashed")
+plt.legend()
+plt.title("MSFT Stock Price Prediction")
+plt.show()
+🔹 7. Compare MSFT to Other Stocks
+You can also compare MSFT with other companies like Apple (AAPL) or NVIDIA (NVDA):
+
+python
+Copy
+Edit
+tickers = ["MSFT", "AAPL", "NVDA"]
+stocks = yf.download(tickers, start="2020-01-01", end="2024-01-01")["Close"]
+stocks.plot(figsize=(12,6), title="Stock Price Comparison")
+plt.show()
