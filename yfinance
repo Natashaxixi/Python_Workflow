@@ -1,3 +1,10 @@
+import yfinance as yf
+# Download historical data for a stock
+msft = yf.Ticker("MSFT")
+msft_data = msft.history(period="max")
+# Display the downloaded data
+msft_data.head()
+
 1. Explore the Data
 Check the first few rows to understand the dataset:
 
@@ -105,3 +112,18 @@ tickers = ["MSFT", "AAPL", "NVDA"]
 stocks = yf.download(tickers, start="2020-01-01", end="2024-01-01")["Close"]
 stocks.plot(figsize=(12,6), title="Stock Price Comparison")
 plt.show()
+
+
+
+import yfinance as yf
+
+# Download historical data for AMD
+amd = yf.Ticker("AMD")
+amd_data = amd.history(period="max")
+
+# Display the downloaded data
+print(amd_data.head())
+
+# Get the volume of AMD traded on the first day
+first_day_volume = amd_data.iloc[0]['Volume']
+print(f"Volume of AMD traded on the first day: {first_day_volume}")
